@@ -17,6 +17,11 @@ function checksExistsUserAccount(request, response, next) {
 app.post('/users', (request, response) => {
   const { name, username } = request.body;
 
+  const user = {
+    name : name,
+    username: username,
+  }
+
   users.push({
     id: uuidv4(),
     name,
@@ -24,9 +29,8 @@ app.post('/users', (request, response) => {
     todos: [],
   });
 
-  console.log(users);
 
-  return response.status(201).send();
+  return response.status(201).send(user);
 });
 
 app.get('/todos', checksExistsUserAccount, (request, response) => {
