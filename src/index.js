@@ -28,6 +28,12 @@ function checksExistsUserAccount(request, response, next) {
 app.post('/users', (request, response) => {
   const { name, username } = request.body;
 
+  const userAlreadyExists = users.some( user => user.username === username);
+
+  if(userAlreadyExists) {
+    return response.status(400).json({ error: "O usuário já existe!"});
+  }
+
   const user = {
     name : name,
     username: username,
@@ -109,7 +115,26 @@ app.patch('/todos/:id/done', checksExistsUserAccount, (request, response) => {
 });
 
 app.delete('/todos/:id', checksExistsUserAccount, (request, response) => {
-  // Complete aqui
+  const { user } = request;
+
+  const { id } = request.params;
+
+  const indexTodo = user.todos.findIndex( todo => todo.id === id);
+
+  if( indexTodo === -1) {
+    return response.status(404).json({ error: "Todo not found"});
+  }
+
+  user.todos.splice(indexTodo, 1);
+
+  return response.status(204).json(user.todos);
+
+
+
+
+
+
+
 });
 
 module.exports = app;
